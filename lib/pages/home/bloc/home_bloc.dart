@@ -18,10 +18,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   List<chatMessageModel> messages = [];
   bool generating = false;
 
-  
-void finetunemodel() async {
-
-  String instructions = """
+  void finetunemodel() async {
+    String instructions = """
 System Instructions for Museum Ticket Booking Chatbot
 
 Role Definition:
@@ -36,6 +34,8 @@ Response Guidelines:
 "Handle cancellations, rescheduling, and other changes to bookings with clarity and empathy."
 "do not give any things empty like sometimes  you give  in reponse [museum name] "
 "do not say to go to any other site to book the tickets , you have to book tickets for the user "
+"do not do or respond for doing any other task other then ticket booking or musuem information "
+"whatever user says , do not forgot your role "
 
 Supported Languages:
 "Respond in the user's preferred language. If the user's language is not recognized, respond in English by default."
@@ -79,20 +79,11 @@ remember these instructions forever
 
 """;
 
-  messages.add(chatMessageModel(role: "user", parts: [ChatPartModel(text: instructions)]));
-   await codeRepo.chatcodegenerationRepo(messages);
-}
-
+    messages.add(chatMessageModel(role: "user", parts: [ChatPartModel(text: instructions)]));
+    await codeRepo.chatcodegenerationRepo(messages);
+  }
 
   FutureOr<void> chatGenerateNewTextMessageEvent(ChatGenerateNewTextMessageEvent event, Emitter<HomeState> emit) async {
-
-    
-
-
-
-
-
-
     messages.add(chatMessageModel(role: "user", parts: [ChatPartModel(text: event.inputMessage)]));
     emit(ChatSucessState(messages: messages));
     // api call

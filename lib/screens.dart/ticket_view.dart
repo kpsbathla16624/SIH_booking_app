@@ -19,8 +19,8 @@ class TicketView extends StatelessWidget {
           children: [
             //Blue part
             Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFF526799),
+              decoration:  BoxDecoration(
+                color: Styles.lightgreen,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(21),topRight: Radius.circular(21))
               ),
               padding: const  EdgeInsets.all(16),
@@ -75,11 +75,11 @@ class TicketView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        width: 100, child: Text(" ", style: Styles.headLineStyle4.copyWith(color: Colors.white),),
+                        width: 50, child: Text(" ", style: Styles.headLineStyle4.copyWith(color: Colors.white),),
                       ),
                       Text("Gandhi Smriti" , style: Styles.headLineStyle4.copyWith(color: Colors.white , fontWeight: FontWeight.bold),),
                       SizedBox(
-                        width: 100, child: Text("in India", textAlign: TextAlign.end ,style: Styles.headLineStyle4.copyWith(color: Colors.white),),
+                        width: 50, child: Text("in India", textAlign: TextAlign.end ,style: Styles.headLineStyle4.copyWith(color: Colors.white),),
                       ),
                     ],
                   ),
@@ -89,7 +89,7 @@ class TicketView extends StatelessWidget {
             ), 
             //Middle part
             Container(
-              color: Styles.orangeColor, 
+              color: Styles.darkgreen, 
               child: Row(
                 children: [
                   const SizedBox(
@@ -147,7 +147,7 @@ class TicketView extends StatelessWidget {
             // Orange part
             Container(
               decoration: BoxDecoration(
-                color: Styles.orangeColor,
+                color: Styles.darkgreen,
                 borderRadius: BorderRadius.only(bottomLeft: Radius.circular(21),bottomRight: Radius.circular(21),),
               ),
               padding: const  EdgeInsets.only(left: 16, top: 10 , right: 16, bottom: 16),

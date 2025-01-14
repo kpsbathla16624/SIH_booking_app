@@ -1,9 +1,12 @@
 
 import 'package:book_tickets/models/chat_message_model.dart';
 import 'package:book_tickets/pages/home/bloc/home_bloc.dart';
+import 'package:book_tickets/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class Chatscreen extends StatefulWidget {
   const Chatscreen({super.key});
@@ -15,10 +18,52 @@ class Chatscreen extends StatefulWidget {
 class _ChatscreenState extends State<Chatscreen> {
   final HomeBloc chatbloc = HomeBloc();
   TextEditingController textEditingController = TextEditingController();
+   late stt.SpeechToText _speech;
+  bool _isListening = false;
+  String _text = 'Press the button and start speaking';
+  double _confidence = 1.0;
+  
+
+  @override
+  void initState() {
+    super.initState();
+    _speech = stt.SpeechToText();
+  }
+
+  void _listen() async {
+    if (!_isListening) {
+      bool available = await _speech.initialize(
+        onStatus: (val) => print('onStatus: $val'),
+        onError: (val) => print('onError: $val'),
+      );
+      if (available) {
+        setState(() => _isListening = true);
+        _speech.listen(
+          onResult: (val) => setState(() {
+            textEditingController.text = val.recognizedWords;
+            if (val.hasConfidenceRating && val.confidence > 0) {
+              _confidence = val.confidence;
+            }
+          }),
+        );
+      } else {
+        setState(() => _isListening = false);
+        _speech.stop();
+      }
+    } else {
+      setState(() => _isListening = false);
+      _speech.stop();
+    }
+  }
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar
+      (
+        backgroundColor: Styles.darkgreen,
+        title: Text(" herit.AI.ge" , style: TextStyle( color: Styles.lighterGreen, fontSize: 30 , fontStyle: FontStyle.italic , fontWeight: FontWeight.bold),),centerTitle: true,),
      extendBody: true,
      extendBodyBehindAppBar: true,
       body: BlocConsumer<HomeBloc, HomeState>(
@@ -33,22 +78,10 @@ class _ChatscreenState extends State<Chatscreen> {
               return Container(
                 height: double.maxFinite,
                 width: double.maxFinite,
-                color: Colors.white,
+                color: Styles.MorelighterGreen2,
                 child: Column(
                   children: [
-                    Container(
-                      height: 100,
-                      padding: EdgeInsets.symmetric(horizontal: 16 , vertical: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Chat With AI ',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25,),
-                          )
-                        ],
-                      ),
-                    ),
+                   
                     Expanded(
                       child: ListView.builder(
                         itemCount: messages.length,
@@ -121,7 +154,8 @@ class _ChatscreenState extends State<Chatscreen> {
                         child: Lottie.asset('assets/loader3.json'),
                       ),
                     Container(
-                      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                      margin: EdgeInsets.only(bottom: 80),
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 22),
                       child: Row(
                         children: [
                           Expanded(
@@ -132,12 +166,15 @@ class _ChatscreenState extends State<Chatscreen> {
                               ),
                               cursorColor: Theme.of(context).primaryColor,
                               decoration: InputDecoration(
+
+                                
                                 
                                 hintText: "Ask something from AI ",
                                 hintStyle: TextStyle(color: Colors.grey.shade500),
+
                                 filled: true,
                                 fillColor: Colors.white,
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(100),  borderSide: BorderSide(
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(20),  borderSide: BorderSide(
                                     color: Colors.black,
                                     width: 2
                                   ), ),
@@ -153,7 +190,24 @@ class _ChatscreenState extends State<Chatscreen> {
                             ),
                           ),
                           const SizedBox(
-                            width: 15,
+                            width: 10,
+                          ),
+                          InkWell(
+                            onTap:_listen,
+                            child: CircleAvatar(
+                              radius: 32,
+                              backgroundColor: Styles.darkgreen,
+                              child: CircleAvatar(
+                                radius: 30,
+                               backgroundColor: Styles.darkgreen,
+                                child: Center(
+                                  child:  Icon(_isListening ? Icons.mic : Icons.mic_none , color: Colors.white,),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
                           ),
                           InkWell(
                             onTap: () {
@@ -167,10 +221,10 @@ class _ChatscreenState extends State<Chatscreen> {
                             },
                             child: CircleAvatar(
                               radius: 32,
-                              backgroundColor: Colors.white,
+                              backgroundColor: Styles.darkgreen,
                               child: CircleAvatar(
                                 radius: 30,
-                                backgroundColor: Theme.of(context).primaryColor,
+                               backgroundColor: Styles.darkgreen,
                                 child: Center(
                                   child: Icon(
                                     Icons.send,
